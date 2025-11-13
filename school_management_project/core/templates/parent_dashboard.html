@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Parent Dashboard{% endblock %}
+{% block sidebar %}
+<a href="{% url 'parent_dashboard' %}" class="active">Dashboard</a>
+<a href="{% url 'inbox' %}">Messages</a>
+<a href="{% url 'send_message' %}">Contact Teacher</a>
+{% endblock %}
+{% block content %}
+<h1 class="mb-4">Parent Dashboard</h1>
+
+<div class="row">
+    {% for child in children %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-graduate"></i> {{ child.user.get_full_name }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Admission No:</strong> {{ child.admission_number }}</p>
+                <p><strong>Class:</strong> {{ child.class_enrolled }}</p>
+                <p><strong>Roll No:</strong> {{ child.roll_number }}</p>
+                <a href="{% url 'child_details' child.id %}" class="btn btn-primary w-100">
+                    <i class="fas fa-eye"></i> View Details
+                </a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-users fa-5x text-muted mb-3"></i>
+                <h4 class="text-muted">No children registered</h4>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Recent Announcements</h5>
+            </div>
+            <div class="card-body">
+                {% for announcement in announcements %}
+                <div class="mb-3 pb-3 border-bottom">
+                    <h6 class="mb-1">{{ announcement.title }}</h6>
+                    <p class="mb-1">{{ announcement.content }}</p>
+                    <small class="text-muted">
+                        <i class="fas fa-clock"></i> {{ announcement.created_at|date:"M d, Y H:i" }}
+                    </small>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted">No announcements yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

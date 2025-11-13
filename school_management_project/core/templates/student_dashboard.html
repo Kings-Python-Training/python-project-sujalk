@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+{% block sidebar %}
+<a href="{% url 'student_dashboard' %}" class="active">Dashboard</a>
+<a href="{% url 'assignment_list' %}">Assignments</a>
+<a href="{% url 'inbox' %}">Messages</a>
+{% endblock %}
+{% block content %}
+<h1 class="mb-4">Student Dashboard</h1>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div class="card-body">
+                <h3>Welcome, {{ student.user.get_full_name }}!</h3>
+                <p class="mb-0">
+                    <i class="fas fa-id-card"></i> {{ student.admission_number }} | 
+                    <i class="fas fa-school"></i> {{ student.class_enrolled }} | 
+                    <i class="fas fa-hashtag"></i> Roll No: {{ student.roll_number }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0">Pending Assignments</h5>
+            </div>
+            <div class="card-body">
+                {% for assignment in pending_assignments %}
+                <div class="mb-3 p-3" style="background-color: #fff3cd; border-radius: 8px;">
+                    <h6 class="mb-1">{{ assignment.title }}</h6>
+                    <p class="text-muted small mb-2">{{ assignment.description|truncatewords:15 }}</p>
+                    <p class="mb-2">
+                        <i class="fas fa-clock text-danger"></i> Due: {{ assignment.due_date|date:"M d, Y H:i" }}
+                    </p>
+                    <a href="{% url 'submit_assignment' assignment.id %}" class="btn btn-sm btn-warning">
+                        <i class="fas fa-upload"></i> Submit
+                    </a>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted">No pending assignments</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Recent Grades</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Marks</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for grade in recent_grades %}
+                        <tr>
+                            <td>{{ grade.subject.name }}</td>
+                            <td>{{ grade.marks_obtained }}/{{ grade.total_marks }}</td>
+                            <td>
+                                <span class="badge bg-{% if grade.percentage >= 80 %}success{% elif grade.percentage >= 60 %}warning{% else %}danger{% endif %}">
+                                    {{ grade.grade_letter }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No grades yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Recent Attendance</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for attendance in recent_attendance %}
+                    <div class="col-md-2 text-center mb-3">
+                        <div class="p-2" style="border-radius: 8px; background-color: 
+                            {% if attendance.status == 'present' %}#d4edda{% elif attendance.status == 'absent' %}#f8d7da{% else %}#fff3cd{% endif %}">
+                            <small class="d-block">{{ attendance.date|date:"M d" }}</small>
+                            <i class="fas fa-{% if attendance.status == 'present' %}check-circle text-success{% elif attendance.status == 'absent' %}times-circle text-danger{% else %}exclamation-circle text-warning{% endif %}" style="font-size: 2rem;"></i>
+                            <small class="d-block text-capitalize">{{ attendance.status }}</small>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-center text-muted">No attendance records yet</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

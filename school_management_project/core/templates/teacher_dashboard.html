@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block sidebar %}
+<a href="{% url 'teacher_dashboard' %}" class="active">Dashboard</a>
+<a href="{% url 'assignment_create' %}">Create Assignment</a>
+<a href="{% url 'upload_grades' %}">Upload Grades</a>
+<a href="{% url 'inbox' %}">Messages</a>
+<a href="{% url 'announcement_create' %}">Announcements</a>
+{% endblock %}
+{% block content %}
+<h1 class="mb-4">Teacher Dashboard</h1>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card" style="border-left: 4px solid #3498db;">
+            <i class="fas fa-book-reader" style="color: #3498db;"></i>
+            <h3>{{ assigned_subjects.count }}</h3>
+            <p class="text-muted">Assigned Subjects</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card" style="border-left: 4px solid #f39c12;">
+            <i class="fas fa-clipboard-list" style="color: #f39c12;"></i>
+            <h3>{{ pending_submissions }}</h3>
+            <p class="text-muted">Pending Reviews</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card" style="border-left: 4px solid #e74c3c;">
+            <i class="fas fa-envelope" style="color: #e74c3c;"></i>
+            <h3>{{ messages }}</h3>
+            <p class="text-muted">Unread Messages</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Assigned Classes</h5>
+            </div>
+            <div class="card-body">
+                {% for subject in assigned_subjects %}
+                <div class="mb-3 p-3" style="background-color: #f8f9fa; border-radius: 8px;">
+                    <h6 class="mb-1">{{ subject.subject.name }}</h6>
+                    <p class="text-muted mb-2">Class: {{ subject.class_obj }}</p>
+                    <a href="{% url 'mark_attendance' subject.class_obj.id %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-check-circle"></i> Mark Attendance
+                    </a>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted">No assigned subjects yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'assignment_create' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-plus-circle"></i> Create Assignment
+                    </a>
+                    <a href="{% url 'upload_grades' %}" class="btn btn-outline-success btn-lg">
+                        <i class="fas fa-chart-line"></i> Upload Grades
+                    </a>
+                    <a href="{% url 'send_message' %}" class="btn btn-outline-info btn-lg">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </a>
+                    <a href="{% url 'announcement_create' %}" class="btn btn-outline-warning btn-lg">
+                        <i class="fas fa-megaphone"></i> Make Announcement
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

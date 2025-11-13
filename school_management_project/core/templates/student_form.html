@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Add Student{% endblock %}
+{% block sidebar %}
+<a href="{% url 'admin_dashboard' %}">Dashboard</a>
+<a href="{% url 'student_list' %}">Students</a>
+<a href="{% url 'student_create' %}" class="active">Add Student</a>
+{% endblock %}
+{% block content %}
+<h1 class="mb-4">Add New Student</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <h5 class="mb-3">User Information</h5>
+            {{ user_form|crispy }}
+            
+            <hr class="my-4">
+            
+            <h5 class="mb-3">Profile Information</h5>
+            {{ profile_form|crispy }}
+            
+            <hr class="my-4">
+            
+            <h5 class="mb-3">Student Information</h5>
+            {{ student_form|crispy }}
+            
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> Save Student
+                </button>
+                <a href="{% url 'student_list' %}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
